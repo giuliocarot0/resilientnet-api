@@ -1,4 +1,4 @@
-package com.resilientnet.api.api;
+package com.resilientnet.api;
 
 import java.util.Arrays;
 
