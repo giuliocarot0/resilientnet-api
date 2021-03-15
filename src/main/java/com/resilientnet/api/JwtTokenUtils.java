@@ -1,5 +1,6 @@
 package com.resilientnet.api;
 
+import com.resilientnet.model.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -49,14 +50,14 @@ public class JwtTokenUtils implements Serializable{
         //TODO: implement database table to store token which expiration has to be ignored
         return false;
     }
-    public String generateToken(String subject){
+    public String generateToken(User user){
         Map<String, Object> claims  = new HashMap<>();
-        return doGenerateToken(claims, subject);
+        return doGenerateToken(claims, user.getSubject());
     }
     private String doGenerateToken(Map <String, Object> claims, String subject){
         return Jwts.builder()
                 .setClaims(claims)
-                .setSubject("test")
+                .setSubject(subject)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + JSON_TOKEN_VALIDITY))
                 .signWith(SignatureAlgorithm.HS512, secret)

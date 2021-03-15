@@ -1,6 +1,7 @@
 package com.resilientnet.api;
 import com.resilientnet.authentication.AuthenticationProvider;
 import com.resilientnet.model.JwtResponse;
+import com.resilientnet.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,14 +25,14 @@ public class RouteMapper {
     }
 
     @RequestMapping(value = "/basic/authenticate", produces = "application/json")
-    public ResponseEntity <?> generateAuthenticationToken(@RequestHeader("IDP-Authorization") String auth) throws Exception{
-        String username = authenticate(auth);
-        final String token = jwtTokenUtils.generateToken(username);
+    public ResponseEntity <?> generateAuthenticationToken(@RequestHeader("Authorization") String auth) throws Exception{
+        User authenticated = authenticate(auth);
+        final String token = jwtTokenUtils.generateToken(authenticated);
 
         return ResponseEntity.ok(new JwtResponse(token));
     }
 
-    private String authenticate(String auth) throws Exception {
+    private User authenticate(String auth) throws Exception {
         Objects.requireNonNull(auth);
         try {
             return AuthenticationProvider.authenticate(auth);

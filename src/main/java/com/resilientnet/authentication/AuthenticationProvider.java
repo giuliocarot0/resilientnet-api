@@ -1,6 +1,8 @@
 package com.resilientnet.authentication;
 
 
+import com.resilientnet.model.User;
+import com.resilientnet.utils.Json;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
@@ -14,23 +16,32 @@ import java.util.regex.Pattern;
 
 public class AuthenticationProvider {
 
-    public static String authenticate (String oidcToken) throws Exception {
+    public static User authenticate (String oidcToken) throws Exception {
         //authenticator receives username and token to submit to IDP
 
         try{
-            String username = validateFromIDP(oidcToken);
-            if (username == null) {
+            User idpValidated = validateFromIDP(oidcToken);
+            User appAuthenticated = authenticateUser(idpValidated);
+            if (!idpValidated.isValid()) {
                 throw new Exception("IDP says: invalid token");
             }
-            return username;
+            else if(!idpValidated.isAuthenticated()){
+                throw new Exception("User cannot consume this APIs");
+            }
+            return appAuthenticated;
         }
         catch (Exception e) {
             throw new Exception(e);
         }
     }
 
+    private static User authenticateUser(User idpValidated) {
+        idpValidated.authenticate();
+        return idpValidated;
+    }
 
-    public static String validateFromIDP(String auth) throws Exception{
+
+    private static User validateFromIDP(String auth) throws Exception{
         //get the authentication string and validate it to the IDP
         //username will be retrived
         URI uri = URI.create("https://idp.resilientnet.com/auth/realms/resilientnetidp/protocol/openid-connect/userinfo");
@@ -44,10 +55,12 @@ public class AuthenticationProvider {
 
             //if status from IDP is not OK token is invalid
             if(res.statusCode() != 200)
-                return null;
+                return new User(null, false);
 
             //Token validate, retrieves the username
-            return getUserString(res.body());
+            Map<String, Object> map = Json.toMap(res.body());
+            map.forEach((k,v) -> System.out.println(k));
+            return new User(map, true);
         }
         catch (Exception e){
             throw new Exception("IDP_REQ_FAILED", e);
