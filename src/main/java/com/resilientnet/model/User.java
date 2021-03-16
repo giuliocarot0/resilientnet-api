@@ -21,6 +21,14 @@ public class User {
         this.authenticated = false;
         this.valid = valid;
     }
+    public User (Boolean valid){
+        this.id = null;
+        this.name =  null;
+        this.surname =null;
+        this.email =  null;
+        this.authenticated = false;
+        this.valid = valid;
+    }
     public String getSubject() {
         return id;
     }

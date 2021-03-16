@@ -3,15 +3,12 @@ package com.resilientnet.authentication;
 
 import com.resilientnet.model.User;
 import com.resilientnet.utils.Json;
-import org.springframework.stereotype.Component;
 
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
 public class AuthenticationProvider {
@@ -55,21 +52,14 @@ public class AuthenticationProvider {
 
             //if status from IDP is not OK token is invalid
             if(res.statusCode() != 200)
-                return new User(null, false);
+                return new User(false);
 
             //Token validate, retrieves the username
             Map<String, Object> map = Json.toMap(res.body());
-            map.forEach((k,v) -> System.out.println(k));
             return new User(map, true);
         }
         catch (Exception e){
             throw new Exception("IDP_REQ_FAILED", e);
         }
-    }
-
-    private static String getUserString(String body){
-        body = body.split(",")[3].split(":")[1];
-        String user = body.substring(1, body.length()-1);
-        return user;
     }
 }
