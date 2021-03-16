@@ -18,7 +18,7 @@ import java.util.function.Function;
 @Component
 public class JwtTokenUtils implements Serializable{
     private static final long serialVersionUID = -2550185165626007488L ;
-    public static final long JSON_TOKEN_VALIDITY = 5*60*60; //set token expiration in 1 hours
+    public static final long JSON_TOKEN_VALIDITY = 5*60*60*60; //set token expiration in 1 hours
 
     @Value("${jwt.secret}")
     private String secret;
