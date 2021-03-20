@@ -1,4 +1,4 @@
-package com.resilientnet.api.api;
+package com.resilientnet;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
