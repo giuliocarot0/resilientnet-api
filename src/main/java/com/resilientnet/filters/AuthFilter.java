@@ -10,10 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.Collection;
-import java.util.Locale;
+import java.util.*;
 
 @Component
 public class AuthFilter implements Filter {
@@ -32,22 +29,29 @@ public class AuthFilter implements Filter {
             filterChain.doFilter(request, servletResponse);
             return;
         }
-
-        Arrays.stream(request.getCookies()).forEach(c->{
-            System.out.println(c.getName() + "=" +c.getValue());
-           // System.out.println(Base64.getDecoder().decode(c.getValue().getBytes()).toString());
+        Map<String, String> cookies = new HashMap<>();
+        Arrays.stream(request.getCookies()).forEach(c -> {
+            cookies.put(c.getName(), new String(Base64.getDecoder().decode(c.getValue().getBytes())));
         });
 
         String auth = request.getHeader("Authorization");
-        String token = auth.split(" ")[1];
-
-        if(jwtTokenUtils.validateToken(token, request.getCookies()[0].getValue()))
-        //doFilter
-            filterChain.doFilter(request, servletResponse);
-        else
-            ((HttpServletResponse)servletResponse).sendError(HttpServletResponse.SC_UNAUTHORIZED, "invalid token");
+        if (auth == null) {
+            ((HttpServletResponse) servletResponse).sendError(HttpServletResponse.SC_BAD_REQUEST, "Bad Request");
+        } else {
+            String type = auth.split(" ")[0];
+            String token = auth.split(" ")[1];
+            if (!type.equals("Bearer")) {
+                ((HttpServletResponse) servletResponse).sendError(HttpServletResponse.SC_BAD_REQUEST, "Wrong Grant Type");
+            }
+            else {
+                if (jwtTokenUtils.validateToken(token, cookies.get("_uid")))
+                //doFilter
+                    filterChain.doFilter(request, servletResponse);
+                else
+                    ((HttpServletResponse) servletResponse).sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid Token");
+            }
+        }
     }
-
     @Override
     public void destroy() {
 
