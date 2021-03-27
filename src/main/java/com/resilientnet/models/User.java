@@ -17,31 +17,41 @@ import java.util.Map;
 public class User {
     @Id
     private String _uid;
-    private String id, name, surname, email, birthday, gender, type, roles;
+    private String subject, name, surname, email, birthday, gender, type, roles;
+    private Boolean completed;
     @Transient
     private Boolean authenticated, valid;
-    public User (String id, String name, String surname, String email, Boolean valid){
-        this.id = id;
+    public User (String subject, String name, String surname, String email, Boolean valid){
+        this.subject = subject;
         this.name = name;
         this.surname = surname;
         this.email = email;
         this.authenticated = false;
         this.valid = valid;
     }
-    public User (Map<String,Object> idpUserData, Boolean valid){
-        this.id = (String)idpUserData.getOrDefault("preferred_username", null);
-        this.name = (String)idpUserData.getOrDefault("given_name", null);
-        this.surname =(String)idpUserData.getOrDefault("family_name", null);
-        this.email = (String)idpUserData.getOrDefault("email", null);
+    //constructor used by authentication controller to create a new user into db
+    public User(User _u){
+        this.subject = _u.subject;
+        this.name = _u.name;
+        this.surname = _u.surname;
+        this.email = _u.email;
         this.birthday ="";
         this.gender= "";
         this.type="";
         this.roles="";
+        this.completed = false;
+    }
+    //constructor used by authentication provider
+    public User (Map<String,Object> idpUserData, Boolean valid){
+        this.subject = (String)idpUserData.getOrDefault("preferred_username", null);
+        this.name = (String)idpUserData.getOrDefault("given_name", null);
+        this.surname =(String)idpUserData.getOrDefault("family_name", null);
+        this.email = (String)idpUserData.getOrDefault("email", null);
         this.authenticated = false;
         this.valid = valid;
     }
     public User (Boolean valid){
-        this.id = null;
+        this.subject = null;
         this.name =  null;
         this.surname =null;
         this.email =  null;
@@ -49,13 +59,13 @@ public class User {
         this.valid = valid;
     }
     public String getSubject() {
-        return id;
+        return subject;
     }
     public Boolean isValid(){
         return valid;
     }
-    public void setId(String id) {
-        this.id = id;
+    public void setSubject(String subject) {
+        this.subject = subject;
     }
 
     public String getName() {

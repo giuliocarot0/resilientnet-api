@@ -3,6 +3,8 @@ package com.resilientnet.authentication;
 
 import com.resilientnet.models.User;
 import com.resilientnet.utils.Json;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
+import org.springframework.security.core.Authentication;
 
 import java.net.URI;
 import java.net.http.HttpClient;

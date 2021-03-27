@@ -1,12 +1,16 @@
 package com.resilientnet.controllers;
 import com.resilientnet.api.JwtTokenUtils;
 import com.resilientnet.authentication.AuthenticationProvider;
+import com.resilientnet.authentication.CustomAuthenticationToken;
 import com.resilientnet.models.JwtResponse;
 import com.resilientnet.models.User;
 import com.resilientnet.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -52,12 +56,11 @@ public class AuthController {
     //once the user is authenticated verify if its his first access and create its instance into DB
     private void pushOrCheckDb(User u) throws Exception {
         try {
-           // User _user = userRepository.findBySubject(u.getSubject());
-            User _user = null;
+            User _user = userRepository.findBySubject(u.getSubject());
             if (_user == null)
                 //then create a new document into db
                 try {
-                    userRepository.save(u);
+                    userRepository.save(new User(u));
                 } catch (Exception e) {
                     throw new Exception(e);
                 }

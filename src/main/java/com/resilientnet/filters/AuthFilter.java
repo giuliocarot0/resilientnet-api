@@ -1,7 +1,10 @@
 package com.resilientnet.filters;
 
 import com.resilientnet.api.JwtTokenUtils;
+import com.resilientnet.authentication.CustomAuthenticationToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.*;
@@ -18,7 +21,7 @@ public class AuthFilter implements Filter {
     private JwtTokenUtils jwtTokenUtils;
 
     @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
+    public void init(FilterConfig filterConfig)  {
 
     }
 
@@ -33,9 +36,9 @@ public class AuthFilter implements Filter {
         Boolean no_cookie = false;
         if(request.getCookies() == null) no_cookie = true;
         else {
-            Arrays.stream(request.getCookies()).forEach(c -> {
-                cookies.put(c.getName(), new String(Base64.getDecoder().decode(c.getValue().getBytes())));
-            });
+            Arrays.stream(request.getCookies()).forEach(c ->
+                cookies.put(c.getName(), new String(Base64.getDecoder().decode(c.getValue().getBytes())))
+            );
         }
         String auth = request.getHeader("Authorization");
         if (auth == null || no_cookie) {
@@ -47,9 +50,12 @@ public class AuthFilter implements Filter {
                 ((HttpServletResponse) servletResponse).sendError(HttpServletResponse.SC_BAD_REQUEST, "Wrong Grant Type");
             }
             else {
-                if (jwtTokenUtils.validateToken(token, cookies.get("_uid")))
+                if (jwtTokenUtils.validateToken(token, cookies.get("_uid"))){
                 //doFilter
+                    SecurityContext sc = SecurityContextHolder.getContext();
+                    sc.setAuthentication(new CustomAuthenticationToken(jwtTokenUtils.getUsernameFromToken(token)));
                     filterChain.doFilter(request, servletResponse);
+                }
                 else
                     ((HttpServletResponse) servletResponse).sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid Token");
             }
