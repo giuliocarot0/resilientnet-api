@@ -19,6 +19,8 @@ public class AuthenticationProvider {
         try{
             User idpValidated = validateFromIDP(oidcToken);
             User appAuthenticated = authenticateUser(idpValidated);
+            //look for user into db to see whether is valid or not
+
             if (!idpValidated.isValid()) {
                 throw new Exception("IDP says: invalid token");
             }

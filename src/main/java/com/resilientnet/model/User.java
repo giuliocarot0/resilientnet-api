@@ -1,8 +1,22 @@
 package com.resilientnet.model;
 
-import java.util.Map;
+import jdk.jfr.DataAmount;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.Map;
+@Data
+@Document(collection = "users")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
+    @Id
+    private String _uid;
     private String id, name, surname, email;
     private Boolean authenticated, valid;
     public User (String id, String name, String surname, String email, Boolean valid){
