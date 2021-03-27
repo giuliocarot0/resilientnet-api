@@ -1,6 +1,6 @@
-package com.resilientnet.userapis;
+package com.resilientnet.controllers;
 
-import com.resilientnet.repository.UserRepository;
+import com.resilientnet.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +13,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/user")
 public class UserController {
+
     @Autowired
     UserRepository userRepository;
 
@@ -22,7 +23,6 @@ public class UserController {
     */
     @GetMapping("/info")
     public ResponseEntity<Map<String,String>> getUserInfo(){
-
         return null;
     }
 

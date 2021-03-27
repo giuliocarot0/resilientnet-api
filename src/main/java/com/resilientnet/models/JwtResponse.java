@@ -1,4 +1,4 @@
-package com.resilientnet.model;
+package com.resilientnet.models;
 
 import java.io.Serializable;
 

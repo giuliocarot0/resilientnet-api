@@ -1,7 +1,7 @@
 package com.resilientnet.authentication;
 
 
-import com.resilientnet.model.User;
+import com.resilientnet.models.User;
 import com.resilientnet.utils.Json;
 
 import java.net.URI;
@@ -9,7 +9,6 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.*;
-
 
 public class AuthenticationProvider {
 

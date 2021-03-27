@@ -30,12 +30,15 @@ public class AuthFilter implements Filter {
             return;
         }
         Map<String, String> cookies = new HashMap<>();
-        Arrays.stream(request.getCookies()).forEach(c -> {
-            cookies.put(c.getName(), new String(Base64.getDecoder().decode(c.getValue().getBytes())));
-        });
-
+        Boolean no_cookie = false;
+        if(request.getCookies() == null) no_cookie = true;
+        else {
+            Arrays.stream(request.getCookies()).forEach(c -> {
+                cookies.put(c.getName(), new String(Base64.getDecoder().decode(c.getValue().getBytes())));
+            });
+        }
         String auth = request.getHeader("Authorization");
-        if (auth == null) {
+        if (auth == null || no_cookie) {
             ((HttpServletResponse) servletResponse).sendError(HttpServletResponse.SC_BAD_REQUEST, "Bad Request");
         } else {
             String type = auth.split(" ")[0];

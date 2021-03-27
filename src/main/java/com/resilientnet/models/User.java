@@ -1,11 +1,11 @@
-package com.resilientnet.model;
+package com.resilientnet.models;
 
-import jdk.jfr.DataAmount;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Map;
@@ -17,7 +17,8 @@ import java.util.Map;
 public class User {
     @Id
     private String _uid;
-    private String id, name, surname, email;
+    private String id, name, surname, email, birthday, gender, type, roles;
+    @Transient
     private Boolean authenticated, valid;
     public User (String id, String name, String surname, String email, Boolean valid){
         this.id = id;
@@ -32,6 +33,10 @@ public class User {
         this.name = (String)idpUserData.getOrDefault("given_name", null);
         this.surname =(String)idpUserData.getOrDefault("family_name", null);
         this.email = (String)idpUserData.getOrDefault("email", null);
+        this.birthday ="";
+        this.gender= "";
+        this.type="";
+        this.roles="";
         this.authenticated = false;
         this.valid = valid;
     }
