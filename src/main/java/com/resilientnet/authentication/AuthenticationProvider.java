@@ -1,15 +1,16 @@
 package com.resilientnet.authentication;
 
 
-import com.resilientnet.model.User;
+import com.resilientnet.models.User;
 import com.resilientnet.utils.Json;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
+import org.springframework.security.core.Authentication;
 
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.*;
-
 
 public class AuthenticationProvider {
 
@@ -19,6 +20,8 @@ public class AuthenticationProvider {
         try{
             User idpValidated = validateFromIDP(oidcToken);
             User appAuthenticated = authenticateUser(idpValidated);
+            //look for user into db to see whether is valid or not
+
             if (!idpValidated.isValid()) {
                 throw new Exception("IDP says: invalid token");
             }

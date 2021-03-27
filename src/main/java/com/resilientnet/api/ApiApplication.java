@@ -2,13 +2,16 @@ package com.resilientnet.api;
 
 import java.util.Arrays;
 
+import com.resilientnet.repositories.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 @SpringBootApplication(scanBasePackages = {"com.resilientnet.*"})
+@EnableMongoRepositories("com.resilientnet.repositories")
 public class ApiApplication {
 
     public static void main(String[] args) {
